@@ -1,27 +1,32 @@
 package collection
 
-type Collection interface {
-	Iterable
+type Collection[T comparable] interface {
+	Iterable[T]
 
-	Add(e interface{}) bool
-	AddAll(e Collection) bool
+	Add(e T) bool
+	AddAll(e Collection[T]) bool
 	Clear()
-	Contains(e interface{}) bool
-	ContainsAll(e Collection) bool
+	Contains(e T) bool
+	ContainsAll(e Collection[T]) bool
 	Empty() bool
-	Remove(e interface{}) bool
-	RemoveAll(e Collection) bool
-	RetainAll(e Collection) bool
+	Remove(e T) bool
+	RemoveAll(e Collection[T]) bool
+	RetainAll(e Collection[T]) bool
 	Size() int
-	ToSlice() []interface{}
+	ToSlice() []T
 }
 
-type Iterable interface {
-	GetIterator() Iterator
+type Iterable[T comparable] interface {
+	GetIterator() Iterator[T]
 }
 
-type Iterator interface {
+type Iterator[T comparable] interface {
 	HasNext() bool
-	Next() interface{}
+	Next() T
 	Remove()
+}
+
+func zero[T any]() T {
+	var zero T
+	return zero
 }

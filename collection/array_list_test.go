@@ -7,14 +7,14 @@ import (
 )
 
 func TestArrayList_Add(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	assert.Equal(t, 1, list.Size())
 	assert.Equal(t, true, list.Contains(1))
 }
 
 func TestArrayList_AddAt(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	list.Add(1)
 	list.Add(1)
@@ -27,8 +27,8 @@ func TestArrayList_AddAt(t *testing.T) {
 }
 
 func TestArrayList_AddAll(t *testing.T) {
-	list := &ArrayList{}
-	l := &ArrayList{}
+	list := &ArrayList[int]{}
+	l := &ArrayList[int]{}
 	l.Add(1)
 	l.Add(2)
 	list.AddAll(l)
@@ -38,7 +38,7 @@ func TestArrayList_AddAll(t *testing.T) {
 }
 
 func TestArrayList_Clear(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	list.Add(1)
 	assert.Equal(t, 2, list.Size())
@@ -47,17 +47,17 @@ func TestArrayList_Clear(t *testing.T) {
 }
 
 func TestArrayList_Contains(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	assert.Equal(t, true, list.Contains(1))
 	assert.Equal(t, false, list.Contains(2))
 }
 
 func TestArrayList_ContainsAll(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	list.Add(2)
-	l := &ArrayList{}
+	l := &ArrayList[int]{}
 	l.Add(1)
 	assert.Equal(t, true, list.ContainsAll(l))
 	l.Add(2)
@@ -67,14 +67,14 @@ func TestArrayList_ContainsAll(t *testing.T) {
 }
 
 func TestArrayList_TsEmpty(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	assert.Equal(t, true, list.Empty())
 	list.Add(1)
 	assert.Equal(t, false, list.Empty())
 }
 
 func TestArrayList_Remove(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	assert.Equal(t, false, list.Remove(1))
 	list.Add(1)
 	list.Add(2)
@@ -85,11 +85,11 @@ func TestArrayList_Remove(t *testing.T) {
 }
 
 func TestArrayList_RemoveAll(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	list.Add(2)
 	list.Add(3)
-	l := &ArrayList{}
+	l := &ArrayList[int]{}
 	l.Add(1)
 	l.Add(2)
 	assert.Equal(t, true, list.RemoveAll(l))
@@ -100,11 +100,11 @@ func TestArrayList_RemoveAll(t *testing.T) {
 }
 
 func TestArrayList_RetainAll(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	list.Add(2)
 	list.Add(3)
-	l := &ArrayList{}
+	l := &ArrayList[int]{}
 	l.Add(1)
 	l.Add(2)
 	l.Add(3)
@@ -116,20 +116,20 @@ func TestArrayList_RetainAll(t *testing.T) {
 }
 
 func TestArrayList_Size(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	assert.Equal(t, 0, list.Size())
 	list.Add(1)
 	assert.Equal(t, 1, list.Size())
 }
 
 func TestArrayList_ToSlice(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	assert.Equal(t, 1, len(list.ToSlice()))
 }
 
 func TestAlIterator_HasNext(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	assert.Equal(t, false, list.GetIterator().HasNext())
 	list.Add(1)
 	it := list.GetIterator()
@@ -139,7 +139,7 @@ func TestAlIterator_HasNext(t *testing.T) {
 }
 
 func TestAlIterator_Next(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	list.Add(2)
 	it := list.GetIterator()
@@ -149,7 +149,7 @@ func TestAlIterator_Next(t *testing.T) {
 }
 
 func TestAlIterator_Remove(t *testing.T) {
-	list := &ArrayList{}
+	list := &ArrayList[int]{}
 	list.Add(1)
 	list.Add(2)
 	list.Add(3)

@@ -1,21 +1,21 @@
 package collection
 
-type ArrayList struct {
-	array    []interface{}
+type ArrayList[T comparable] struct {
+	array    []T
 	modCount int
 }
 
-func (al *ArrayList) Add(e interface{}) bool {
+func (al *ArrayList[T]) Add(e T) bool {
 	al.array = append(al.array, e)
 	al.modCount++
 	return true
 }
 
-func (al *ArrayList) AddAt(p int, e interface{}) {
+func (al *ArrayList[T]) AddAt(p int, e T) {
 	if p < 0 || p > al.Size()-1 {
 		panic("list bounds out of range")
 	}
-	var np []interface{}
+	var np []T
 	for i := 0; i < al.Size(); i++ {
 		if i == p {
 			np = append(np, e)
@@ -26,7 +26,7 @@ func (al *ArrayList) AddAt(p int, e interface{}) {
 	al.modCount++
 }
 
-func (al *ArrayList) AddAll(c Collection) bool {
+func (al *ArrayList[T]) AddAll(c Collection[T]) bool {
 	if c.Size() <= 0 {
 		return false
 	}
@@ -36,16 +36,16 @@ func (al *ArrayList) AddAll(c Collection) bool {
 	return true
 }
 
-func (al *ArrayList) Clear() {
-	al.array = []interface{}{}
+func (al *ArrayList[T]) Clear() {
+	al.array = []T{}
 	al.modCount = 0
 }
 
-func (al *ArrayList) Contains(e interface{}) bool {
+func (al *ArrayList[T]) Contains(e T) bool {
 	return al.IndexOf(e) > -1
 }
 
-func (al *ArrayList) ContainsAll(c Collection) bool {
+func (al *ArrayList[T]) ContainsAll(c Collection[T]) bool {
 	it := c.GetIterator()
 	for it.HasNext() {
 		if !al.Contains(it.Next()) {
@@ -55,29 +55,29 @@ func (al *ArrayList) ContainsAll(c Collection) bool {
 	return true
 }
 
-func (al *ArrayList) Get(p int) interface{} {
+func (al *ArrayList[T]) Get(p int) T {
 	if p < 0 || p > al.Size()-1 {
 		panic("list bounds out of range")
 	}
 	return al.array[p]
 }
 
-func (al *ArrayList) RemoveAt(p int) {
+func (al *ArrayList[T]) RemoveAt(p int) {
 	al.Remove(al.Get(p))
 }
 
-func (al *ArrayList) Set(p int, e interface{}) {
+func (al *ArrayList[T]) Set(p int, e T) {
 	if p < 0 || p > al.Size()-1 {
 		panic("list bounds out of range")
 	}
 	al.array[p] = e
 }
 
-func (al *ArrayList) Empty() bool {
+func (al *ArrayList[T]) Empty() bool {
 	return len(al.array) == 0
 }
 
-func (al *ArrayList) Remove(e interface{}) bool {
+func (al *ArrayList[T]) Remove(e T) bool {
 	idx := al.IndexOf(e)
 	if idx == -1 {
 		return false
@@ -92,8 +92,8 @@ func (al *ArrayList) Remove(e interface{}) bool {
 	return idx != -1
 }
 
-func (al *ArrayList) RemoveAll(c Collection) bool {
-	var np []interface{}
+func (al *ArrayList[T]) RemoveAll(c Collection[T]) bool {
+	var np []T
 	for _, el := range al.array {
 		if !c.Contains(el) {
 			np = append(np, el)
@@ -111,8 +111,8 @@ func (al *ArrayList) RemoveAll(c Collection) bool {
 	return false
 }
 
-func (al *ArrayList) RetainAll(c Collection) bool {
-	var np []interface{}
+func (al *ArrayList[T]) RetainAll(c Collection[T]) bool {
+	var np []T
 	for _, el := range al.array {
 		if c.Contains(el) {
 			np = append(np, el)
@@ -130,25 +130,25 @@ func (al *ArrayList) RetainAll(c Collection) bool {
 	return false
 }
 
-func (al *ArrayList) Size() int {
+func (al *ArrayList[T]) Size() int {
 	return len(al.array)
 }
 
-func (al *ArrayList) ToSlice() []interface{} {
-	dest := make([]interface{}, al.Size())
+func (al *ArrayList[T]) ToSlice() []T {
+	dest := make([]T, al.Size())
 	copy(dest, al.array)
 	return dest
 }
 
-func (al *ArrayList) GetIterator() Iterator {
-	return &AlIterator{
+func (al *ArrayList[T]) GetIterator() Iterator[T] {
+	return &AlIterator[T]{
 		idx:            -1,
 		al:             al,
 		expectModCount: al.modCount,
 	}
 }
 
-func (al *ArrayList) IndexOf(e interface{}) int {
+func (al *ArrayList[T]) IndexOf(e T) int {
 	for i, el := range al.array {
 		if el == e {
 			return i
@@ -157,30 +157,30 @@ func (al *ArrayList) IndexOf(e interface{}) int {
 	return -1
 }
 
-type AlIterator struct {
+type AlIterator[T comparable] struct {
 	idx            int
-	al             *ArrayList
+	al             *ArrayList[T]
 	expectModCount int
 }
 
-func (it *AlIterator) HasNext() bool {
+func (it *AlIterator[T]) HasNext() bool {
 	it.checkStatus()
 	return it.idx < len(it.al.array)-1
 }
 
-func (it *AlIterator) Next() interface{} {
+func (it *AlIterator[T]) Next() T {
 	it.checkStatus()
 	it.idx++
 	return it.al.Get(it.idx)
 }
 
-func (it *AlIterator) Remove() {
+func (it *AlIterator[T]) Remove() {
 	it.al.Remove(it.al.Get(it.idx))
 	it.expectModCount++
 	it.idx--
 }
 
-func (it *AlIterator) checkStatus() {
+func (it *AlIterator[T]) checkStatus() {
 	if it.expectModCount != it.al.modCount {
 		panic("list has been modified during Iterate")
 	}

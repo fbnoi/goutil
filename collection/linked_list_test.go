@@ -7,7 +7,7 @@ import (
 )
 
 func TestLinkedList_Add(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	assert.Equal(t, 0, ll.Size())
 	ll.Add(1)
 	assert.Equal(t, 1, ll.Size())
@@ -18,7 +18,7 @@ func TestLinkedList_Add(t *testing.T) {
 }
 
 func TestLinkedList_AddAt(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	assert.Equal(t, 0, ll.Size())
 	ll.Add(1)
 	ll.Add(3)
@@ -32,8 +32,8 @@ func TestLinkedList_AddAt(t *testing.T) {
 }
 
 func TestLinkedList_AddAll(t *testing.T) {
-	ll := &LinkedList{}
-	ls := &LinkedList{}
+	ll := &LinkedList[int]{}
+	ls := &LinkedList[int]{}
 	ls.Add(1)
 	ls.Add(2)
 	ll.AddAll(ls)
@@ -44,7 +44,7 @@ func TestLinkedList_AddAll(t *testing.T) {
 }
 
 func TestLinkedList_Clear(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	assert.Equal(t, 1, ll.Size())
 	assert.Equal(t, 1, ll.modCount)
@@ -54,17 +54,17 @@ func TestLinkedList_Clear(t *testing.T) {
 }
 
 func TestLinkedList_Contains(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	assert.Equal(t, true, ll.Contains(1))
 }
 
 func TestLinkedList_ContainsAll(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	ll.Add(2)
 	ll.Add(3)
-	ls := &LinkedList{}
+	ls := &LinkedList[int]{}
 	ls.Add(2)
 	assert.Equal(t, true, ll.ContainsAll(ls))
 	ls.Add(4)
@@ -72,7 +72,7 @@ func TestLinkedList_ContainsAll(t *testing.T) {
 }
 
 func TestLinkedList_Get(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	ll.Add(2)
 	ll.Add(3)
@@ -85,14 +85,14 @@ func TestLinkedList_Get(t *testing.T) {
 }
 
 func TestLinkedList_Empty(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	assert.Equal(t, true, ll.Empty())
 	ll.Add(1)
 	assert.Equal(t, false, ll.Empty())
 }
 
 func TestLinkedList_Remove(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	assert.Equal(t, false, ll.Remove(2))
 	assert.Equal(t, true, ll.Remove(1))
@@ -101,7 +101,7 @@ func TestLinkedList_Remove(t *testing.T) {
 }
 
 func TestLinkedList_RemoveAt(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	ll.Add(2)
 	ll.Add(3)
@@ -116,11 +116,11 @@ func TestLinkedList_RemoveAt(t *testing.T) {
 }
 
 func TestLinkedList_RemoveAll(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	ll.Add(1)
 	ll.Add(2)
-	ls := &ArrayList{}
+	ls := &ArrayList[int]{}
 	ls.Add(1)
 	ls.Add(2)
 	assert.Equal(t, true, ll.RemoveAll(ls))
@@ -128,7 +128,7 @@ func TestLinkedList_RemoveAll(t *testing.T) {
 }
 
 func TestLinkedList_Set(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	ll.Add(2)
 	assert.Equal(t, 2, ll.Get(1))
@@ -137,12 +137,12 @@ func TestLinkedList_Set(t *testing.T) {
 }
 
 func TestLinkedList_RetainAll(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	ll.Add(2)
 	ll.Add(3)
 	ll.Add(4)
-	ls := &LinkedList{}
+	ls := &LinkedList[int]{}
 	ls.Add(1)
 	ls.Add(2)
 	assert.Equal(t, 4, ll.Size())
@@ -152,7 +152,7 @@ func TestLinkedList_RetainAll(t *testing.T) {
 }
 
 func TestLinkedList_ITHasNext(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	it := ll.GetIterator()
 	assert.Equal(t, true, it.HasNext())
@@ -161,7 +161,7 @@ func TestLinkedList_ITHasNext(t *testing.T) {
 }
 
 func TestLinkedList_ITNext(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	ll.Add(2)
 	ll.Add(3)
@@ -175,7 +175,7 @@ func TestLinkedList_ITNext(t *testing.T) {
 }
 
 func TestLinkedList_ITRemove(t *testing.T) {
-	ll := &LinkedList{}
+	ll := &LinkedList[int]{}
 	ll.Add(1)
 	ll.Add(2)
 	ll.Add(3)

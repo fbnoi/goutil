@@ -1,20 +1,20 @@
 package collection
 
-type entry struct {
-	previous *entry
-	next     *entry
-	value    interface{}
+type entry[T comparable] struct {
+	previous *entry[T]
+	next     *entry[T]
+	value    T
 }
 
-type LinkedList struct {
-	head     *entry
-	end      *entry
+type LinkedList[T comparable] struct {
+	head     *entry[T]
+	end      *entry[T]
 	size     int
 	modCount int
 }
 
-func (ll *LinkedList) linkFirst(val interface{}) {
-	entry := &entry{
+func (ll *LinkedList[T]) linkFirst(val T) {
+	entry := &entry[T]{
 		next:  ll.head,
 		value: val,
 	}
@@ -28,8 +28,8 @@ func (ll *LinkedList) linkFirst(val interface{}) {
 	ll.modCount++
 }
 
-func (ll *LinkedList) linkLast(val interface{}) {
-	entry := &entry{
+func (ll *LinkedList[T]) linkLast(val T) {
+	entry := &entry[T]{
 		previous: ll.end,
 		value:    val,
 	}
@@ -43,8 +43,8 @@ func (ll *LinkedList) linkLast(val interface{}) {
 	ll.modCount++
 }
 
-func (ll *LinkedList) linkbefore(val interface{}, e *entry) {
-	entry := &entry{
+func (ll *LinkedList[T]) linkbefore(val T, e *entry[T]) {
+	entry := &entry[T]{
 		value:    val,
 		next:     e,
 		previous: e.previous,
@@ -60,7 +60,7 @@ func (ll *LinkedList) linkbefore(val interface{}, e *entry) {
 	ll.modCount++
 }
 
-func (ll *LinkedList) unlinkFirst() bool {
+func (ll *LinkedList[T]) unlinkFirst() bool {
 	if ll.head != nil {
 		next := ll.head.next
 		head := ll.head
@@ -70,7 +70,7 @@ func (ll *LinkedList) unlinkFirst() bool {
 		if next != nil {
 			next.previous = nil
 		}
-		head.value = nil
+		head.value = zero[T]()
 		head.next = nil
 		ll.head = next
 		ll.size--
@@ -80,7 +80,7 @@ func (ll *LinkedList) unlinkFirst() bool {
 	return false
 }
 
-func (ll *LinkedList) unlinkLast() bool {
+func (ll *LinkedList[T]) unlinkLast() bool {
 	if ll.end != nil {
 		previous := ll.end.previous
 		end := ll.end
@@ -90,7 +90,7 @@ func (ll *LinkedList) unlinkLast() bool {
 		if previous != nil {
 			previous.next = nil
 		}
-		end.value = nil
+		end.value = zero[T]()
 		end.previous = nil
 		ll.end = previous
 		ll.size--
@@ -100,7 +100,7 @@ func (ll *LinkedList) unlinkLast() bool {
 	return false
 }
 
-func (ll *LinkedList) unlink(en *entry) bool {
+func (ll *LinkedList[T]) unlink(en *entry[T]) bool {
 	if en == nil {
 		return false
 	}
@@ -113,29 +113,29 @@ func (ll *LinkedList) unlink(en *entry) bool {
 		en.next.previous = en.previous
 		en.next = nil
 		en.previous = nil
-		en.value = nil
+		en.value = zero[T]()
 		ll.size--
 		ll.modCount++
 	}
 	return true
 }
 
-func (ll *LinkedList) checkIndex(p int) {
+func (ll *LinkedList[T]) checkIndex(p int) {
 	if p < 0 || p > ll.Size()-1 {
 		panic("list bounds out of range")
 	}
 }
 
-func (ll *LinkedList) Add(e interface{}) bool {
+func (ll *LinkedList[T]) Add(e T) bool {
 	ll.linkLast(e)
 	return true
 }
 
-func (ll *LinkedList) AddFirst(e interface{}) {
+func (ll *LinkedList[T]) AddFirst(e T) {
 	ll.linkFirst(e)
 }
 
-func (ll *LinkedList) AddAt(p int, e interface{}) {
+func (ll *LinkedList[T]) AddAt(p int, e T) {
 	ll.checkIndex(p)
 	en := ll.head
 	for j := 0; en != nil && j < p; j++ {
@@ -148,7 +148,7 @@ func (ll *LinkedList) AddAt(p int, e interface{}) {
 	}
 }
 
-func (ll *LinkedList) AddAll(c Collection) bool {
+func (ll *LinkedList[T]) AddAll(c Collection[T]) bool {
 	if c.Size() > 0 {
 		it := c.GetIterator()
 		for it.HasNext() {
@@ -159,7 +159,7 @@ func (ll *LinkedList) AddAll(c Collection) bool {
 	return false
 }
 
-func (ll *LinkedList) AddAllAt(p int, c Collection) bool {
+func (ll *LinkedList[T]) AddAllAt(p int, c Collection[T]) bool {
 	ll.checkIndex(p)
 	if c.Size() > 0 {
 		en := ll.head
@@ -178,13 +178,13 @@ func (ll *LinkedList) AddAllAt(p int, c Collection) bool {
 	return false
 }
 
-func (ll *LinkedList) Clear() {
+func (ll *LinkedList[T]) Clear() {
 	e := ll.head
 	for e != nil {
 		next := e.next
 		e.next = nil
 		e.previous = nil
-		e.value = nil
+		e.value = zero[T]()
 		e = next
 	}
 	ll.head = nil
@@ -193,13 +193,13 @@ func (ll *LinkedList) Clear() {
 	ll.modCount++
 }
 
-func (ll *LinkedList) Reset() {
+func (ll *LinkedList[T]) Reset() {
 	e := ll.head
 	for e != nil {
 		next := e.next
 		e.next = nil
 		e.previous = nil
-		e.value = nil
+		e.value = zero[T]()
 		e = next
 	}
 	ll.head = nil
@@ -208,7 +208,7 @@ func (ll *LinkedList) Reset() {
 	ll.modCount = 0
 }
 
-func (ll *LinkedList) IndexOf(e interface{}) int {
+func (ll *LinkedList[T]) IndexOf(e T) int {
 	for i, en := 0, ll.head; i < ll.size && en != nil; i, en = i+1, en.next {
 		if en.value == e {
 			return i
@@ -217,11 +217,11 @@ func (ll *LinkedList) IndexOf(e interface{}) int {
 	return -1
 }
 
-func (ll *LinkedList) Contains(e interface{}) bool {
+func (ll *LinkedList[T]) Contains(e T) bool {
 	return ll.IndexOf(e) > -1
 }
 
-func (ll *LinkedList) ContainsAll(c Collection) bool {
+func (ll *LinkedList[T]) ContainsAll(c Collection[T]) bool {
 	it := c.GetIterator()
 	findAll := true
 	for it.HasNext() {
@@ -232,7 +232,7 @@ func (ll *LinkedList) ContainsAll(c Collection) bool {
 	return findAll
 }
 
-func (ll *LinkedList) Get(p int) interface{} {
+func (ll *LinkedList[T]) Get(p int) T {
 	ll.checkIndex(p)
 	en := ll.head
 	for j := 0; en != nil && j < p; j, en = j+1, en.next {
@@ -240,13 +240,13 @@ func (ll *LinkedList) Get(p int) interface{} {
 	return en.value
 }
 
-func (ll *LinkedList) Empty() bool {
+func (ll *LinkedList[T]) Empty() bool {
 	return ll.size == 0
 }
 
-func (ll *LinkedList) Remove(e interface{}) bool {
+func (ll *LinkedList[T]) Remove(e T) bool {
 	en := ll.head
-	var f *entry
+	var f *entry[T]
 	for ; en != nil; en = en.next {
 		if en.value == e {
 			f = en
@@ -256,7 +256,7 @@ func (ll *LinkedList) Remove(e interface{}) bool {
 	return ll.unlink(f)
 }
 
-func (ll *LinkedList) RemoveAt(p int) {
+func (ll *LinkedList[T]) RemoveAt(p int) {
 	ll.checkIndex(p)
 	en := ll.head
 	for j := 0; en != nil && j < p; j, en = j+1, en.next {
@@ -264,7 +264,7 @@ func (ll *LinkedList) RemoveAt(p int) {
 	ll.unlink(en)
 }
 
-func (ll *LinkedList) RemoveAll(c Collection) bool {
+func (ll *LinkedList[T]) RemoveAll(c Collection[T]) bool {
 	modify := false
 	entry := ll.head
 	for entry != nil {
@@ -278,7 +278,7 @@ func (ll *LinkedList) RemoveAll(c Collection) bool {
 	return modify
 }
 
-func (ll *LinkedList) Set(p int, e interface{}) {
+func (ll *LinkedList[T]) Set(p int, e T) {
 	ll.checkIndex(p)
 	en := ll.head
 	for j := 0; en != nil && j < p; j, en = j+1, en.next {
@@ -287,7 +287,7 @@ func (ll *LinkedList) Set(p int, e interface{}) {
 	ll.modCount++
 }
 
-func (ll *LinkedList) RetainAll(c Collection) bool {
+func (ll *LinkedList[T]) RetainAll(c Collection[T]) bool {
 	entry := ll.head
 	modify := false
 	for entry != nil {
@@ -301,12 +301,12 @@ func (ll *LinkedList) RetainAll(c Collection) bool {
 	return modify
 }
 
-func (ll *LinkedList) Size() int {
+func (ll *LinkedList[T]) Size() int {
 	return ll.size
 }
 
-func (ll *LinkedList) ToSlice() []interface{} {
-	var dest []interface{}
+func (ll *LinkedList[T]) ToSlice() []T {
+	var dest []T
 	entry := ll.head
 	for entry != nil {
 		dest = append(dest, entry.value)
@@ -315,8 +315,8 @@ func (ll *LinkedList) ToSlice() []interface{} {
 	return dest
 }
 
-func (ll *LinkedList) GetIterator() Iterator {
-	return &lIterator{
+func (ll *LinkedList[T]) GetIterator() Iterator[T] {
+	return &lIterator[T]{
 		next:             ll.head,
 		expectedModCount: ll.modCount,
 		list:             ll,
@@ -325,19 +325,19 @@ func (ll *LinkedList) GetIterator() Iterator {
 	}
 }
 
-type lIterator struct {
+type lIterator[T comparable] struct {
 	index            int
-	lastReturn       *entry
-	next             *entry
+	lastReturn       *entry[T]
+	next             *entry[T]
 	expectedModCount int
-	list             *LinkedList
+	list             *LinkedList[T]
 }
 
-func (li *lIterator) HasNext() bool {
+func (li *lIterator[T]) HasNext() bool {
 	return li.index < li.list.size-1
 }
 
-func (li *lIterator) Next() interface{} {
+func (li *lIterator[T]) Next() T {
 	li.checkModStatus()
 	if !li.HasNext() {
 		panic("no such elem")
@@ -348,7 +348,7 @@ func (li *lIterator) Next() interface{} {
 	return li.lastReturn.value
 }
 
-func (li *lIterator) Remove() {
+func (li *lIterator[T]) Remove() {
 	if li.lastReturn == nil {
 		li.invalidLastReturn()
 	}
@@ -363,7 +363,7 @@ func (li *lIterator) Remove() {
 	li.expectedModCount++
 }
 
-func (li *lIterator) Set(e interface{}) {
+func (li *lIterator[T]) Set(e T) {
 	if li.lastReturn == nil {
 		li.invalidLastReturn()
 	}
@@ -371,7 +371,7 @@ func (li *lIterator) Set(e interface{}) {
 	li.lastReturn.value = e
 }
 
-func (li *lIterator) Add(e interface{}) {
+func (li *lIterator[T]) Add(e T) {
 	if li.lastReturn == nil {
 		li.invalidLastReturn()
 	}
@@ -384,12 +384,12 @@ func (li *lIterator) Add(e interface{}) {
 	li.lastReturn.value = e
 }
 
-func (li *lIterator) checkModStatus() {
+func (li *lIterator[T]) checkModStatus() {
 	if li.expectedModCount != li.list.modCount {
 		panic("list has been modified during Iterate")
 	}
 }
 
-func (li *lIterator) invalidLastReturn() {
+func (li *lIterator[T]) invalidLastReturn() {
 	panic("last returns is nil")
 }
